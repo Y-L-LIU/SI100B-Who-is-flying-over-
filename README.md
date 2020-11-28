@@ -35,5 +35,5 @@ It is not necessary to give a tag.
 <code>git push origin (your branch)</code>
 
 <font size = 20>TIPS</font><br>
-**Rememner not to creat file with the same name in branch:master**
+**Rememner not to creat file with the same name in branch:master**<br>
 **Remember to push your code to your own branch not the master**
