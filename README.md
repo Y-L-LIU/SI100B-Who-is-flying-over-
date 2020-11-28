@@ -32,7 +32,7 @@ If you have finished the part belongs to you, when committing to your own repo.
 
 It is not necessary to give a tag.
 
-<code>git push origin (your branch)</code?
+<code>git push origin (your branch)</code>
 
 <font size = 20>TIPS</font><br>
 **Rememner not to creat file with the same name in branch:master**
