@@ -31,6 +31,6 @@ If you have finished the part belongs to you, when committing to your own repo.
 **To Push**
 It is not necessary to give a tag.
 
-<font size = 20>TIPS</font>
+<font size = 20>TIPS</font><br>
 **Rememner not to creat file with the same name in branch:master**
 **Remember to push your code to your own branch not the master**
