@@ -10,7 +10,7 @@ Futhermore, there are a variety of functions accsesible if and only if by using 
 
 If you want to learn more, search for more information on the Internet.
 
-**To get start:
+**To get start**:
 <code>
 git clone ...
 </code>
@@ -18,7 +18,7 @@ git clone ...
 <code>
 git checkout "your own branch's name"
 </code>
-(I have created for you, like ylliu\ydqiu\htwei)**
+(I have created for you, like ylliu\ydqiu\htwei)
 
 **To commit**
 
