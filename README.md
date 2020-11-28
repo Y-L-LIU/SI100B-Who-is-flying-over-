@@ -29,7 +29,10 @@ If you have finished the part belongs to you, when committing to your own repo.
 **please give detailed message concluding the specific functions you edit in order to help the command<code>git reflog</code>easier to use**
 
 **To Push**
+
 It is not necessary to give a tag.
+
+<code>git push origin (your branch)</code?
 
 <font size = 20>TIPS</font><br>
 **Rememner not to creat file with the same name in branch:master**
