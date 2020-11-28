@@ -16,6 +16,7 @@ If you want to learn more, search for more information on the Internet.
 git clone ...
 </code>
 
+
 <code>
 git checkout "your own branch's name"
 </code>
