@@ -14,6 +14,7 @@ If you want to learn more, search for more information on the Internet.
 <code>
 git clone ...
 </code>
+
 <code>
 git checkout "your own branch's name"
 </code>
@@ -23,4 +24,4 @@ git checkout "your own branch's name"
 
 **To commit**
 If you have finished the part belongs to you, when committing to your own repo. 
-**please give detailed message concluding the specific functions you edit in order to help the command<code>git reflog</code>**
+**please give detailed message concluding the specific functions you edit in order to help the command<code>git reflog</code>easier to use**
