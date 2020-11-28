@@ -1,4 +1,4 @@
-**<font size=8>Please do not fork Just get into your own branch</font>**
+**<font size=20>Please do not fork Just get into your own branch</font>**
 
 Its very important to know that the difference between fork and branch.
 
@@ -18,9 +18,7 @@ git clone ...
 <code>
 git checkout "your own branch's name"
 </code>
-(I have created for you, like ylliu\ydqiu\htwei)
-
-**
+(I have created for you, like ylliu\ydqiu\htwei)**
 
 **To commit**
 If you have finished the part belongs to you, when committing to your own repo. 
