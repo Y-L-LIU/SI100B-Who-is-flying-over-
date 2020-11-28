@@ -26,4 +26,6 @@ git checkout "your own branch's name"
 
 If you have finished the part belongs to you, when committing to your own repo. 
 
-**please give detailed message concluding the specific functions you edit in order to help the command<code>git reflog</code>easier to use**
+**please give detailed message concluding the specific functions you edit in order to help the command<code>git reflog</code>easier to use**th
+
+**Rememner not to creat file with the same name in branch:master**
