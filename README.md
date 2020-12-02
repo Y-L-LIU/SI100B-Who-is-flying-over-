@@ -1,12 +1,12 @@
 **<font size=20>Please do not fork Just get into your own branch</font>**
 
-Its very important to know that the difference between fork and branch.
+It's very important to know the difference between fork and branch.
 
-Fork means a compeletely now repo.
+Fork means a completely new repo.
 
 Branch means you develop your part in the same repo. 
 
-Futhermore, there are a variety of functions accsesible if and only if by using branch.
+Furthermore, there are a variety of functions accessible if and only if through using branch.
 
 If you want to learn more, search for more information on the Internet.
 
@@ -26,7 +26,7 @@ git checkout "your own branch's name"
 
 If you have finished the part belongs to you, when committing to your own repo. 
 
-**please give detailed message concluding the specific functions you edit in order to help the command<code>git reflog</code>easier to use**
+**please give detailed message concluding the specific functions you edit in order to make the command<code>git reflog</code>easier to use**
 
 **To Push**
 
@@ -35,5 +35,5 @@ It is not necessary to give a tag.
 <code>git push origin (your branch)</code>
 
 <font size = 20>TIPS</font><br>
-**Rememner not to creat file with the same name in branch:master**<br>
+**Remember not to create file with the same name in branch:master**<br>
 **Remember to push your code to your own branch not the master**
