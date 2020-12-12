@@ -79,3 +79,5 @@ class Fr24Crawler:
         while True:
             self.get_data_once()
             time.sleep(interval)
+
+Fr24Crawler((31.17,121.32),(31.53,120.52)).get_data_once()

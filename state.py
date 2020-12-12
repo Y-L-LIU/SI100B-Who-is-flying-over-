@@ -17,7 +17,6 @@ class State:
         self.__ld_count = 0
         # init的时候并不需要get data 但记得把light_controller相关的东西init一下
         self.__light_controller = BaseController()
-        raise NotImplemented
 
     def get_data_once(self):
         try:
@@ -42,8 +41,28 @@ class State:
             print('没有数据！')
 
 
-    def light_sequence(self):
-        raise NotImplemented
+    def light_sequence(self,mode,data): 
+        #mode = 1 用于表示航班总数    mode = 2 用于表示起飞数量    mode = 3 用于表示降落数量   mode = 4 用于表示数据的间隔   mode = 5 用于表示一次完整流程的结束  data作为一个数据输入口
+        if mode = 1:
+            i = data / 10
+            j = data % 10
+            self.__light_controller.spark(1,i)
+            self.__light_controller.spark(2.j)
+        if mode = 2:
+            i = data / 10
+            j = data % 10
+            self.__light_controller.spark(1,i)
+            self.__light_controller.spark(2.j)
+        if mode = 3:
+            i = data / 10
+            j = data % 10
+            self.__light_controller.spark(1,i)
+            self.__light_controller.spark(2.j)
+        if mode = 4:
+            self.__light_controller.separated()
+        if mode = 5:
+            self.__light_controller.work_once()
+        
 
     def spin(self, interval=10):
         while True:
