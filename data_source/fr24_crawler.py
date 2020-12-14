@@ -6,27 +6,10 @@ from typing import List, Tuple, Dict, Any
 
 class Fr24Crawler:
 
-    def __init__(self, loc: Tuple[float, float], rng, mode=None):
-        # loc->location rng->range
-        # loc:(latitude经度, longitude纬度)
-        # rng: mode=0(西北角坐标) (latitude经度, longitude纬度)
-        #      mode=1(长方形长高) (length长, height高)单位是nm海里
-        if mode:
-            # 以长高建立区域
-            raise NotImplemented
-        else:
-            d_latitude = rng[0] - loc[0]
-            d_longitude = loc[1] - rng[1]
-            min_latitude = loc[0] - d_latitude
-            min_longitude = loc[1] - d_longitude
-            max_latitude = loc[0] + d_latitude
-            max_longitude = loc[1] + d_longitude
-        # data是当作接口的一个东西 存在json文件列表的第0项里
-        self.__data = {'location': loc, 'range': ((min_latitude, min_longitude), (max_latitude, max_longitude))}
-        # bounds和headers用于后面的url
-        self.__bounds = 'bounds={},{},{},{}&faa=1&satellite=1&mlat=1&flarm=1&adsb=1&gnd=1&air=1&vehicles=1&' \
-                        'estimated=1&maxage=14400&gliders=1&stats=1'.format(max_latitude, min_latitude,
-                                                                            min_longitude, max_longitude)
+    def __init__(self):
+        self.__data = None
+        self.__interval = None
+        self.__bounds = None
         self.__headers = {
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
                           'Chrome/87.0.4280.88 Safari/537.36',
@@ -73,9 +56,37 @@ class Fr24Crawler:
         with open('data/' + str(t) + ".json", mode='w') as f:
             f.write(json.dumps(output))
         # 表示Request成功
-        print('响应状态码：', r.status_code)
+        print('时间：', t, '\t响应状态码：', r.status_code)
 
-    def spin(self, interval=10):
+    def spin(self, loc: Tuple[float, float], rng, interval):
         while True:
+            ct = time.time()
+            self.update_settings(loc, rng, interval)
             self.get_data_once()
-            time.sleep(interval)
+            dt = time.time() - ct
+            time.sleep(self.__interval - dt)
+
+    def update_settings(self, loc, rng, interval):
+        # loc->location rng->range
+        # loc:(latitude经度, longitude纬度)
+        # rng: mode=0(西北角坐标) (latitude经度, longitude纬度)
+        #      mode=1(长方形长高) (length长, height高)单位是nm海里
+        d_latitude = rng[0] - loc[0]
+        d_longitude = loc[1] - rng[1]
+        min_latitude = loc[0] - d_latitude
+        min_longitude = loc[1] - d_longitude
+        max_latitude = loc[0] + d_latitude
+        max_longitude = loc[1] + d_longitude
+        # data是当作接口的一个东西 存在json文件列表的第0项里
+        self.__interval = interval
+        self.__data = {'location': loc, 'range': ((min_latitude, min_longitude), (max_latitude, max_longitude))}
+        # bounds和headers用于后面的url
+        self.__bounds = 'bounds={},{},{},{}&faa=1&satellite=1&mlat=1&flarm=1&adsb=1&gnd=1&air=1&vehicles=1&' \
+                        'estimated=1&maxage=14400&gliders=1&stats=1'.format(max_latitude, min_latitude,
+                                                                            min_longitude, max_longitude)
+
+
+if __name__ == '__main__':
+    crawler = Fr24Crawler()
+    crawler.update_settings((31.17940, 121.59043), (32.67940, 120.09043), 5)
+    crawler.get_data_once()
