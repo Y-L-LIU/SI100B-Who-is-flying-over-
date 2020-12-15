@@ -48,7 +48,7 @@ class Fr24Crawler:
             output.append({'longitude': response[flight][1], 'latitude': response[flight][2],
                            'heading': response[flight][3], 'altitude': response[flight][4],
                            'ground_speed': response[flight][5], 'squawk_number': response[flight][6],
-                           'registration_number': response[flight][9], 'response_number': response[flight][13],
+                           'registration_number': response[flight][9], 'flight_number': response[flight][13],
                            'departure_airport': response[flight][11], 'arrival_airport': response[flight][12],
                            'vertical_speed': response[flight][15]})
         t = time.time_ns()
@@ -56,7 +56,8 @@ class Fr24Crawler:
         with open('data/' + str(t) + ".json", mode='w') as f:
             f.write(json.dumps(output))
         # 表示Request成功
-        print('时间：', t, '\t响应状态码：', r.status_code)
+        if __name__ == '__main__':
+            print('时间：', t, '\t响应状态码：', r.status_code)
 
     def spin(self, loc: Tuple[float, float], rng, interval):
         while True:
@@ -64,7 +65,7 @@ class Fr24Crawler:
             self.update_settings(loc, rng, interval)
             self.get_data_once()
             dt = time.time() - ct
-            time.sleep(self.__interval - dt)
+            time.sleep(self.__interval.value - dt)
 
     def update_settings(self, loc, rng, interval):
         # loc->location rng->range
@@ -79,7 +80,8 @@ class Fr24Crawler:
         max_longitude = loc[1] + d_longitude
         # data是当作接口的一个东西 存在json文件列表的第0项里
         self.__interval = interval
-        self.__data = {'location': loc, 'range': ((min_latitude, min_longitude), (max_latitude, max_longitude))}
+        self.__data = {'location': [loc[0], loc[1]],
+                       'range': ((min_latitude, min_longitude), (max_latitude, max_longitude))}
         # bounds和headers用于后面的url
         self.__bounds = 'bounds={},{},{},{}&faa=1&satellite=1&mlat=1&flarm=1&adsb=1&gnd=1&air=1&vehicles=1&' \
                         'estimated=1&maxage=14400&gliders=1&stats=1'.format(max_latitude, min_latitude,
