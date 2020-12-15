@@ -195,6 +195,9 @@ def _main():
             print('Loaded {}'.format(max(data_dir)))
             continue
         if ipt[0] == 'data':
+            if not f:
+                print('Load file with load first!')
+                continue
             flights = json.loads(f.read())
             data = flights.pop(0)
             if len(ipt) == 1:
@@ -203,7 +206,7 @@ def _main():
                 for flight in flights:
                     line = ''
                     for i in flight:
-                        line = line + str(i) + ':' + str(flight(i)) + '\t'
+                        line = line + str(i) + ':' + str(flight[i]) + '\t'
                     print(line)
                 continue
             for i in ipt[1:]:
@@ -216,7 +219,7 @@ def _main():
                 line = ''
                 for i in flight:
                     if i in ipt[1:]:
-                        line = line + str(i) + ':' + str(flight(i)) + '\t'
+                        line = line + str(i) + ':' + str(flight[i]) + '\t'
                 print(line)
             continue
         print('Invalid syntax!\n'
@@ -271,7 +274,7 @@ def cli_start(logger):
 # 初始化共享内存
 loc = mp.Array('d', (31.17940, 121.59043))
 rng = mp.Array('d', (32.67940, 120.09043))
-interval = mp.Value('d', 5.0)
+interval = mp.Value('d', 15.0)
 enabled = mp.Array('i', (1, 1, 1))
 
 if __name__ == "__main__":

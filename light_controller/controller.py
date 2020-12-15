@@ -19,14 +19,16 @@ class BaseController:
 
     def work_once(self):  # 代表一次完整流程的结束,双灯快闪4次
         i = 0
+        sleep(0.5)
         while i < 4:
             i = i + 1
             self.blue1.on()
             self.blue2.on()
-            sleep(0.5)
+            sleep(0.1)
             self.blue1.off()
             self.blue2.off()
-            sleep(0.5)
+            sleep(0.1)
+        sleep(0.5)
 
     def on(self, code):  # 打开某个led灯,参数为灯的编号
         i = code
@@ -43,21 +45,23 @@ class BaseController:
 
     def separated(self):  # 代表显示数据的间隔，双灯快闪2次
         i = 0
+        sleep(0.5)
         while i < 2:
             i = i + 1
             self.blue1.on()
             self.blue2.on()
-            sleep(0.5)
+            sleep(0.1)
             self.blue1.off()
             self.blue2.off()
-            sleep(0.5)
+            sleep(0.1)
+        sleep(0.5)
 
     def spark(self, code, data=None):  # 代表data次标准的闪烁,参数为灯的编号
         i = 0
         while i < data:
             i = i + 1
             self.on(code)
-            sleep(1)
+            sleep(0.1)
             self.off(code)
-            sleep(1)
+            sleep(0.1)
 

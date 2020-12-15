@@ -67,10 +67,12 @@ class State:
             self.__light_controller.work_once()
 
     def spin(self, enabled: Tuple[bool, bool, bool], interval):
+        time.sleep(5)
         while True:
             self.update_settings(enabled, interval)
             ct = time.time()
             self.get_data_once()
+            self.light_sequence(5)
             if self.__enabled[0]:
                 self.light_sequence(1, self.__fl_count)
                 if self.__enabled[1] or self.__enabled[2]:
