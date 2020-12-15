@@ -22,11 +22,8 @@ class State:
     def get_data_once(self):
         try:
             # 打开最新文件
-            data_dir = os.listdir('data_source/data')
-            for filename in data_dir:
-                filename = int(filename[:-6])
-            #             with open('data_source/data/' + str(max(data_dir)) + '.json') as f:
-            with open('data_source/data/' + str(max(data_dir))) as f:
+            data_dir = os.listdir('data')
+            with open('data/' + max(data_dir)) as f:
                 flights = json.loads(f.read())
                 data = flights.pop(0)
                 # data:{'location':[latitude, longitude], [[min_latitude, min_longitude], [max_latitude, max_longitude]}
@@ -86,7 +83,7 @@ class State:
                 self.light_sequence(3, self.__ld_count)
             self.light_sequence(5)
             dt = time.time() - ct
-            time.sleep(self.__interval - dt)
+            time.sleep(self.__interval.value - dt)
 
     def update_settings(self, enabled, interval):
         self.__enabled = enabled
