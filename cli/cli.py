@@ -1,14 +1,69 @@
 import os
+import sys
+import json
+import shutil
 import logging
 import multiprocessing as mp
-from ..data_source.fr24_crawler import Fr24Crawler
-from ..state import State
+sys.path.append('..')
+from data_source.fr24_crawler import Fr24Crawler
+from state import State
+
+
+def _help():
+    print('可用指令及用法：\n'
+          '\tset \t修改全局变量          \tset parm args\n'
+          '\tshow\t查看全局变量          \tshow parm\n'
+          '\thelp\t查看帮助             \thelp (cmd)\n'
+          '\tload\t读取最新文件          \tload\n'
+          '\tdata\t显示读取后的文件中的数据\tdata (fields)\n'
+          '全局变量及格式：\n'
+          '\tloc     \t搜索中心坐标     \tlatitude longitude\n'
+          '\trng     \t搜索区域西北角坐标\tlatitude longitude\n'
+          '\tinterval\t工作间隔        \tseconds\n'
+          '\tenabled \tLED显示模式     \ton/off on/off on/off\n'
+          '数据关键字：\n'
+          '\tlongitude          \t经度'
+          '\tlatitude           \t纬度'
+          '\theading            \t航向'
+          '\taltitude           \t高度'
+          '\tground_speed       \t地速'
+          '\tsquawk_number      \t应答机编码'
+          '\tregistration_number\t国籍注册号'
+          '\tflight_number      \t航班号'
+          '\tdeparture_airport  \t始发机场'
+          '\tarrival_airport    \t目的机场'
+          '\tvertical_speed     \t垂直速度')
 
 
 def _main():
+    f = None
     while True:
         ipt = input().split()
         if not ipt:
+            continue
+        if ipt[0] in ['help', '?']:
+            if len(ipt) == 1:
+                _help()
+                continue
+            if len(ipt) > 2:
+                print('Too many fields!')
+                continue
+            if ipt[1] == 'set':
+                print('set \t修改全局变量\tset parm args')
+                continue
+            if ipt[1] == 'show':
+                print('show\t查看全局变量\tshow parm')
+                continue
+            if ipt[1] == 'help':
+                print('help\t查看帮助\thelp (cmd)')
+                continue
+            if ipt[1] == 'load':
+                print('load\t读取最新文件\tload')
+                continue
+            if ipt[1] == 'data':
+                print('data\t显示读取后的文件中的数据\tdata (fields)')
+                continue
+            print('No such command!')
             continue
         if ipt[0] == 'set':
             if len(ipt) < 3:
@@ -130,7 +185,42 @@ def _main():
                     if enabled[i]:
                         out[i] = 'On'
                 print('LED Display:\n\t# of Flights: ', out[0], '\n\tTaking Off: ', out[1], '\n\tLanding: ', out[2])
-        print('Invalid syntax!')
+                continue
+        if ipt[0] == 'load':
+            if len(ipt) > 1:
+                print('Too many fields!')
+                continue
+            data_dir = os.listdir('data')
+            f = open('data/' + max(data_dir))
+            print('Loaded {}'.format(max(data_dir)))
+            continue
+        if ipt[0] == 'data':
+            flights = json.loads(f.read())
+            data = flights.pop(0)
+            if len(ipt) == 1:
+                for i in data:
+                    print(i, ':', data[i])
+                for flight in flights:
+                    line = ''
+                    for i in flight:
+                        line = line + str(i) + ':' + str(flight(i)) + '\t'
+                    print(line)
+                continue
+            for i in ipt[1:]:
+                if i not in flights[0]:
+                    print('"{}" is not a valid field!'.format(i))
+                    continue
+            for i in data:
+                print(i,':',data[i])
+            for flight in flights:
+                line = ''
+                for i in flight:
+                    if i in ipt[1:]:
+                        line = line + str(i) + ':' + str(flight(i)) + '\t'
+                print(line)
+            continue
+        print('Invalid syntax!\n'
+              'For help, type help or ?')
 
 
 def _draw():
@@ -162,6 +252,9 @@ def cli_start(logger):
                 state = State()
                 state.spin(enabled, interval)
             except KeyboardInterrupt:
+                # 退出时删除生成的所有json文件
+                shutil.rmtree('data')
+                os.mkdir('data')
                 os.kill(ppid)
         # crawler
         else:
@@ -182,6 +275,7 @@ interval = mp.Value('d', 5.0)
 enabled = mp.Array('i', (1, 1, 1))
 
 if __name__ == "__main__":
-    logger = logging.getLogger("si100b_proj:main")
-    logger.setLevel("INFO")
-    cli_start(logger)
+    # logger = logging.getLogger("si100b_proj:main")
+    # logger.setLevel("INFO")
+    # cli_start(logger)
+    _help()
