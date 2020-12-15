@@ -11,28 +11,28 @@ from state import State
 
 def _help():
     print('可用指令及用法：\n'
-          '\tset \t修改全局变量          \tset parm args\n'
-          '\tshow\t查看全局变量          \tshow parm\n'
-          '\thelp\t查看帮助             \thelp (cmd)\n'
-          '\tload\t读取最新文件          \tload\n'
+          '\tset \t修改全局变量\t\t\tset parm args\n'
+          '\tshow\t查看全局变量\t\t\tshow parm\n'
+          '\thelp\t查看帮助\t\t\t\thelp (cmd)\n'
+          '\tload\t读取最新文件\t\t\tload\n'
           '\tdata\t显示读取后的文件中的数据\tdata (fields)\n'
           '全局变量及格式：\n'
-          '\tloc     \t搜索中心坐标     \tlatitude longitude\n'
-          '\trng     \t搜索区域西北角坐标\tlatitude longitude\n'
-          '\tinterval\t工作间隔        \tseconds\n'
-          '\tenabled \tLED显示模式     \ton/off on/off on/off\n'
+          '\tloc\t\t\t搜索中心坐标\t\tlatitude longitude\n'
+          '\trng\t\t\t搜索区域西北角坐标\tlatitude longitude\n'
+          '\tinterval\t工作间隔\t\t\tseconds\n'
+          '\tenabled \tLED显示模式\t\ton/off on/off on/off\n'
           '数据关键字：\n'
-          '\tlongitude          \t经度'
-          '\tlatitude           \t纬度'
-          '\theading            \t航向'
-          '\taltitude           \t高度'
-          '\tground_speed       \t地速'
-          '\tsquawk_number      \t应答机编码'
-          '\tregistration_number\t国籍注册号'
-          '\tflight_number      \t航班号'
-          '\tdeparture_airport  \t始发机场'
-          '\tarrival_airport    \t目的机场'
-          '\tvertical_speed     \t垂直速度')
+          '\tlongitude\t\t\t经度\n'
+          '\tlatitude\t\t\t纬度\n'
+          '\theading\t\t\t\t航向\n'
+          '\taltitude\t\t\t高度\n'
+          '\tground_speed\t\t地速\n'
+          '\tsquawk_number\t\t应答机编码\n'
+          '\tregistration_number\t国籍注册号\n'
+          '\tflight_number\t\t航班号\n'
+          '\tdeparture_airport\t始发机场\n'
+          '\tarrival_airport\t\t目的机场\n'
+          '\tvertical_speed\t\t垂直速度')
 
 
 def _main():
@@ -203,11 +203,12 @@ def _main():
             if len(ipt) == 1:
                 for i in data:
                     print(i, ':', data[i])
+                lines = ''
                 for flight in flights:
-                    line = ''
                     for i in flight:
-                        line = line + str(i) + ':' + str(flight(i)) + '\t'
-                    print(line)
+                        lines += str(i) + ':' + str(flight(i)) + '\t'
+                    lines += '\n'
+                print(lines)
                 continue
             for i in ipt[1:]:
                 if i not in flights[0]:
@@ -215,12 +216,13 @@ def _main():
                     continue
             for i in data:
                 print(i,':',data[i])
+            lines = ''
             for flight in flights:
-                line = ''
                 for i in flight:
                     if i in ipt[1:]:
-                        line = line + str(i) + ':' + str(flight(i)) + '\t'
-                print(line)
+                        lines += str(i) + ':' + str(flight(i)) + '\t'
+                lines += '\n'
+            print(lines)
             continue
         print('Invalid syntax!\n'
               'For help, type help or ?')
