@@ -120,7 +120,7 @@ def _main():
                     continue
                 # syntax正确：
                 try:
-                    interval.value = float(interval)
+                    interval.value = float(ipt[2])
                 except ValueError:
                     print('Invalid value!')
                 continue
@@ -176,7 +176,7 @@ def _main():
                 continue
             # 显示interval
             if ipt[1] in ['interval', 'itv', 'frequency', 'freq']:
-                print('Work Interval: ', interval)
+                print('Work Interval: ', interval.value)
                 continue
             # 显示led mode
             if ipt[1] in ['enabled', 'enable', 'mode', 'led', 'led_mode']:
@@ -193,7 +193,7 @@ def _main():
             data_dir = os.listdir('data')
             with open('data/' + max(data_dir)) as f:
                 filedata = f.read()
-            print('Loaded {}'.format(max(data_dir)))
+            print('Loaded {} with {} flight(s).'.format(max(data_dir), len(filedata) - 1)
             continue
         if ipt[0] == 'data':
             flights = json.loads(filedata)
@@ -206,7 +206,7 @@ def _main():
                 lines = ''
                 for flight in flights:
                     for i in flight:
-                        lines += str(i) + ':' + str(flight(i)) + '\t'
+                        lines += str(i) + ':' + str(flight[i]) + '\t'
                     lines += '\n'
                 print(lines)
                 continue
@@ -220,7 +220,7 @@ def _main():
             for flight in flights:
                 for i in flight:
                     if i in ipt[1:]:
-                        lines += str(i) + ':' + str(flight(i)) + '\t'
+                        lines += str(i) + ':' + str(flight[i]) + '\t'
                 lines += '\n'
             print(lines)
             continue

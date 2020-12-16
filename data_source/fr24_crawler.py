@@ -53,7 +53,10 @@ class Fr24Crawler:
                            'vertical_speed': response[flight][15]})
         t = time.time_ns()
         output[0]['time'] = t
-        with open('data/' + str(t) + ".json", mode='w') as f:
+        blah = ''
+        if __name__ == '__main__':
+            blah = '../'
+        with open(blah + 'data/' + str(t) + ".json", mode='w') as f:
             f.write(json.dumps(output))
         # 表示Request成功
         if __name__ == '__main__':
