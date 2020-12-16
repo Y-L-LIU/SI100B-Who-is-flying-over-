@@ -50,16 +50,22 @@ class State:
             i = data / 10
             j = data % 10
             self.__light_controller.spark(1, i)
+            if i > 0:
+                time.sleep(0.2)
             self.__light_controller.spark(2, j)
         elif mode == 2:
             i = data / 10
             j = data % 10
             self.__light_controller.spark(1, i)
+            if i > 0:
+                time.sleep(0.2)
             self.__light_controller.spark(2, j)
         elif mode == 3:
             i = data / 10
             j = data % 10
             self.__light_controller.spark(1, i)
+            if i > 0:
+                time.sleep(0.2)
             self.__light_controller.spark(2, j)
         elif mode == 4:
             self.__light_controller.separated()
@@ -85,7 +91,10 @@ class State:
                 self.light_sequence(3, self.__ld_count)
             self.light_sequence(5)
             dt = time.time() - ct
-            time.sleep(self.__interval.value - dt)
+            n = 1
+            while self.__interval.value * n - dt < 0:
+                n += 1
+            time.sleep(self.__interval.value * n - dt)
 
     def update_settings(self, enabled, interval):
         self.__enabled = enabled

@@ -65,7 +65,10 @@ class Fr24Crawler:
             self.update_settings(loc, rng, interval)
             self.get_data_once()
             dt = time.time() - ct
-            time.sleep(self.__interval.value - dt)
+            n = 1
+            while self.__interval.value * n - dt < 0:
+                n += 1
+            time.sleep(self.__interval.value * n - dt)
 
     def update_settings(self, loc, rng, interval):
         # loc->location rng->range
