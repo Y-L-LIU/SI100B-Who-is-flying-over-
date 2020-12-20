@@ -193,7 +193,7 @@ def _main():
             data_dir = os.listdir('data')
             with open('data/' + max(data_dir)) as f:
                 filedata = f.read()
-            print('Loaded {} with {} flight(s).'.format(max(data_dir), len(filedata) - 1)
+            print('Loaded {} with {} flight(s).'.format(max(data_dir), len(filedata) - 1))
             continue
         if ipt[0] == 'data':
             flights = json.loads(filedata)
