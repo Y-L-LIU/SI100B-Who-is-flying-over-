@@ -3,6 +3,8 @@ import json
 import time
 from typing import Tuple
 from light_controller.controller import *
+import multiprocessing as mp
+from data_source.fr24_crawler import Fr24Crawler
 
 
 class State:
@@ -22,11 +24,8 @@ class State:
     def get_data_once(self):
         try:
             # 打开最新文件
-            data_dir = os.listdir('data_source/data')
-            for filename in data_dir:
-                filename = int(filename[:-6])
-            #             with open('data_source/data/' + str(max(data_dir)) + '.json') as f:
-            with open('data_source/data/' + str(max(data_dir))) as f:
+            data_dir = os.listdir('data')
+            with open('data/' + max(data_dir)) as f:
                 flights = json.loads(f.read())
                 data = flights.pop(0)
                 # data:{'location':[latitude, longitude], [[min_latitude, min_longitude], [max_latitude, max_longitude]}
@@ -50,19 +49,25 @@ class State:
         # mode = 5 用于表示一次完整流程的结束
         # data作为一个数据输入口
         if mode == 1:
-            i = data / 10
+            i = data // 10
             j = data % 10
             self.__light_controller.spark(1, i)
+            if i > 0:
+                time.sleep(0.2)
             self.__light_controller.spark(2, j)
         elif mode == 2:
-            i = data / 10
+            i = data // 10
             j = data % 10
             self.__light_controller.spark(1, i)
+            if i > 0:
+                time.sleep(0.2)
             self.__light_controller.spark(2, j)
         elif mode == 3:
-            i = data / 10
+            i = data // 10
             j = data % 10
             self.__light_controller.spark(1, i)
+            if i > 0:
+                time.sleep(0.2)
             self.__light_controller.spark(2, j)
         elif mode == 4:
             self.__light_controller.separated()
@@ -70,10 +75,12 @@ class State:
             self.__light_controller.work_once()
 
     def spin(self, enabled: Tuple[bool, bool, bool], interval):
+        time.sleep(5)
         while True:
             self.update_settings(enabled, interval)
             ct = time.time()
             self.get_data_once()
+            self.light_sequence(5)
             if self.__enabled[0]:
                 self.light_sequence(1, self.__fl_count)
                 if self.__enabled[1] or self.__enabled[2]:
@@ -86,8 +93,20 @@ class State:
                 self.light_sequence(3, self.__ld_count)
             self.light_sequence(5)
             dt = time.time() - ct
-            time.sleep(self.__interval - dt)
+            n = 1
+            while self.__interval.value * n - dt < 0:
+                n += 1
+            if __name__ == '__main__':
+                print(self.__fl_count, '\n', self.__to_count, '\n', self.__ld_count)
+            time.sleep(self.__interval.value * n - dt)
 
     def update_settings(self, enabled, interval):
         self.__enabled = enabled
         self.__interval = interval
+        
+if __name__ == '__main__':
+    
+    interval = mp.Value('d', 5.0)
+    enabled = mp.Array('i', (1, 1, 1))
+    a = State()
+    a.spin(enabled, interval)

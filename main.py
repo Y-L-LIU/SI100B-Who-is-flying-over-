@@ -1,8 +1,10 @@
-from web_server.server import web_server
+import web_server.server
 from cli.cli import cli_start
 import os
 import sys
 import logging
+import webbrowser
+
 
 
 def _help():
@@ -18,7 +20,6 @@ def _help():
     print()
     print("  {} --web".format(sys.argv[0]))
     print()
-
 
 if __name__ == "__main__":
     logger = logging.getLogger("si100b_proj:main")
@@ -38,9 +39,11 @@ if __name__ == "__main__":
     ppid = os.getppid()
     try:
         if flag == '--web':
-            web_server.run(host="0.0.0.0", port=9000)
+            web_server.server.start(logger)
         elif flag == '--cli':
             cli_start(logger)
     except KeyboardInterrupt:
         logger.warning("Control panel exits.")
         os.kill(ppid)
+
+        
