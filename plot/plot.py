@@ -17,6 +17,7 @@ class Plotter:
         self.__loc = None
         self.__rng = None
         self.__interval = None
+        self.__mode = None
 
     def reload(self):
         # 第一次先读取所有现有文件
@@ -82,16 +83,21 @@ class Plotter:
         plt.xlim(self.__min[0], self.__max[0])
         plt.ylim(self.__min[1], self.__max[1])
         plt.axis('equal')
-        plt.savefig('')
+        if self.__mode[0]:
+            plt.savefig('../web_server/static/img/amount.png')
+        elif self.__mode[1]:
+            plt.savefig('../web_server/static/img/takingoff.png')
+        else:
+            plt.savefig('../web_server/static/img/landing.png')
         plt.show()
 
-    def spin(self, loc, rng, interval):
-        c = self.update_settings(loc, rng, interval)
+    def spin(self, loc, rng, mode, interval):
+        c = self.update_settings(loc, rng, mode, interval)
         if c:
             self.get_data()
         self.draw()
 
-    def update_settings(self, loc, rng, interval):
+    def update_settings(self, loc, rng, mode, interval):
         c = True
         if self.__loc != loc or self.__rng != rng:
             self.reload()
@@ -99,6 +105,7 @@ class Plotter:
             c = False
         self.__loc = loc
         self.__rng = rng
+        self.__mode = mode
         if __name__ == '__main__':
             self.__interval = interval
         else:
@@ -108,4 +115,4 @@ class Plotter:
 
 if __name__ == '__main__':
     p = Plotter()
-    p.spin(0, 0, 0)
+    p.spin(0, 0, 0, 0)
