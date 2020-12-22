@@ -1,4 +1,4 @@
-import os
+import os, signal
 import sys
 import json
 import shutil
@@ -246,7 +246,7 @@ def cli_start(logger):
         try:
             _main()
         except KeyboardInterrupt:
-            os.kill(ppid)
+            os.kill(ppid, signal.SIGINT)
     # 子进程：crawler/state
     else:
         crawler_pid = os.fork()
@@ -260,7 +260,7 @@ def cli_start(logger):
                 # 退出时删除生成的所有json文件
                 shutil.rmtree('data')
                 os.mkdir('data')
-                os.kill(ppid)
+                os.kill(ppid, signal.SIGINT)
         # crawler
         else:
             try:
@@ -269,8 +269,8 @@ def cli_start(logger):
             except KeyboardInterrupt:
                 # The process is being killed, let the child process exit.
                 logger.warning("Crawler exits.")
-                os.kill(pid)
-                os.kill(crawler_pid)
+                os.kill(pid, signal.SIGINT)
+                os.kill(crawler_pid, signal.SIGINT)
 
 
 # 初始化共享内存

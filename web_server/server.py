@@ -1,6 +1,6 @@
     # // 需要导入的package
 import json
-import os, io, time, shutil, sys
+import os, io, time, shutil, sys, signal
 sys.path.append('..')
 from data_source.fr24_crawler import Fr24Crawler 
 from state import State
@@ -36,7 +36,7 @@ def start(logger):
         try:
             app.run(host='0.0.0.0', port=5000)
         except KeyboardInterrupt:
-            os.kill(ppid)
+            os.kill(ppid, signal.SIGINT)
     # 子进程：crawler/state
     else:
         crawler_pid = os.fork()
@@ -50,23 +50,23 @@ def start(logger):
                 # 退出时删除生成的所有json文件
                 shutil.rmtree('data')
                 os.mkdir('data')
-                os.kill(ppid)
+                os.kill(ppid,signal.SIGINT)
         # crawler
         else:
             try:
                 crawler = Fr24Crawler()
-                crawler.spin(loc, rng, interval)
+                crawler.spin(loc, rng, enabled,interval)
             except KeyboardInterrupt:
                 # The process is being killed, let the child process exit.
                 logger.warning("Crawler exits.")
-                os.kill(pid)
-                os.kill(crawler_pid)
+                os.kill(pid, signal.SIGINT)
+                os.kill(crawler_pid, signal.SIGINT)
 
     # 初始化共享内存
 # //获取当前目录
 loc = mp.Array('d', (31.17940, 121.59043))
 rng = mp.Array('d', (32.67940, 120.09043))
-interval = mp.Value('d', 5.0)
+interval = mp.Value('d', 5)
 enabled = mp.Array('i', (1, 1, 1))
 
 @app.route('/',methods=['GET', 'POST'])
