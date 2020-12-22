@@ -33,17 +33,17 @@ class Plotter:
             self.__min = data['range'][0]
             self.__max = data['range'][1]
             for flight in flights:
-                if flight['flight_number'] not in self.__flights:
-                    self.__flights[flight['flight_number']] = {}
-                    self.__flights[flight['flight_number']]['latitude'] = [flight['latitude']]
-                    self.__flights[flight['flight_number']]['longitude'] = [flight['longitude']]
-                    self.__flights[flight['flight_number']]['heading'] = [flight['heading']]
-                    self.__flights[flight['flight_number']]['n'] = [self.__n]
+                if flight['registration_number'] not in self.__flights:
+                    self.__flights[flight['registration_number']] = {}
+                    self.__flights[flight['registration_number']]['latitude'] = [flight['latitude']]
+                    self.__flights[flight['registration_number']]['longitude'] = [flight['longitude']]
+                    self.__flights[flight['registration_number']]['heading'] = [flight['heading']]
+                    self.__flights[flight['registration_number']]['n'] = [self.__n]
                 else:
-                    self.__flights[flight['flight_number']]['latitude'].append(flight['latitude'])
-                    self.__flights[flight['flight_number']]['longitude'].append(flight['longitude'])
-                    self.__flights[flight['flight_number']]['heading'].append(flight['heading'])
-                    self.__flights[flight['flight_number']]['n'].append(self.__n)
+                    self.__flights[flight['registration_number']]['latitude'].append(flight['latitude'])
+                    self.__flights[flight['registration_number']]['longitude'].append(flight['longitude'])
+                    self.__flights[flight['registration_number']]['heading'].append(flight['heading'])
+                    self.__flights[flight['registration_number']]['n'].append(self.__n)
             self.__n += 1
         self.__latest_file = data_dir[-1]
 
@@ -56,29 +56,33 @@ class Plotter:
                 flights = json.loads(f.read())
                 data = flights.pop(0)
             for flight in flights:
-                if flight['flight_number'] not in self.__flights:
-                    self.__flights[flight['flight_number']]['latitude'] = [flight['latitude']]
-                    self.__flights[flight['flight_number']]['longitude'] = [flight['longitude']]
-                    self.__flights[flight['flight_number']]['heading'] = [flight['heading']]
-                    self.__flights[flight['flight_number']]['n'] = [self.__n]
+                if flight['registration_number'] not in self.__flights:
+                    self.__flights[flight['registration_number']]['latitude'] = [flight['latitude']]
+                    self.__flights[flight['registration_number']]['longitude'] = [flight['longitude']]
+                    self.__flights[flight['registration_number']]['heading'] = [flight['heading']]
+                    self.__flights[flight['registration_number']]['n'] = [self.__n]
                 else:
-                    self.__flights[flight['flight_number']]['latitude'].append(flight['latitude'])
-                    self.__flights[flight['flight_number']]['longitude'].append(flight['longitude'])
-                    self.__flights[flight['flight_number']]['heading'].append(flight['heading'])
-                    self.__flights[flight['flight_number']]['n'].appned(self.__n)
+                    self.__flights[flight['registration_number']]['latitude'].append(flight['latitude'])
+                    self.__flights[flight['registration_number']]['longitude'].append(flight['longitude'])
+                    self.__flights[flight['registration_number']]['heading'].append(flight['heading'])
+                    self.__flights[flight['registration_number']]['n'].appned(self.__n)
             self.__n += 1
         self.__latest_file = data_dir[-1]
 
     def draw(self):
         for flight in self.__flights:
+            plt.plot(self.__flights[flight]['longitude'], self.__flights[flight]['latitude'], linewidth=7, zorder=-1)
             plt.quiver(self.__flights[flight]['longitude'], self.__flights[flight]['latitude'], 1, 1,
-                       [int(i / self.__n * 255) for i in self.__flights[flight]['latitude']],
-                       angles=self.__flights[flight]['heading'], units='dots', pivot='mid')
+                       [int(i / self.__n * 255) for i in self.__flights[flight]['n']],
+                       angles=self.__flights[flight]['heading'], units='dots', pivot='mid',
+                       headwidth=300, headlength=500, headaxislength=450, scale=0.1)
 
-            plt.plot(self.__flights[flight]['longitude'], self.__flights[flight]['latitude'], label=flight)
-        # plt.xlim(self.__min[0], self.__max[0])
-        # plt.ylim(self.__min[1], self.__max[1])
-        plt.legend()
+            plt.text(self.__flights[flight]['longitude'][-1], self.__flights[flight]['latitude'][-1],
+                     flight)
+        plt.xlim(self.__min[0], self.__max[0])
+        plt.ylim(self.__min[1], self.__max[1])
+        plt.axis('equal')
+        plt.savefig('')
         plt.show()
 
     def spin(self, loc, rng, interval):
