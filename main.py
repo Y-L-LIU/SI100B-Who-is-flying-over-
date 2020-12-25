@@ -1,6 +1,6 @@
 import web_server.server
 from cli.cli import cli_start
-import os
+import os, signal
 import sys
 import logging
 import webbrowser
@@ -44,6 +44,6 @@ if __name__ == "__main__":
             cli_start(logger)
     except KeyboardInterrupt:
         logger.warning("Control panel exits.")
-        os.kill(ppid)
+        os.kill(ppid, signal.SIGINT)
 
-        
+    
