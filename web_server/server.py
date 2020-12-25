@@ -48,8 +48,7 @@ def start(logger):
             except KeyboardInterrupt:
                 # The process is being killed, let the child process exit.
                 logger.warning("Crawler exits.")
-                os.kill(pid, signal.SIGINT)
-                os.kill(crawler_pid, signal.SIGINT)        
+                os.kill(pid, signal.SIGINT)    
     else:
         pid_main = os.getpid()
         try:
