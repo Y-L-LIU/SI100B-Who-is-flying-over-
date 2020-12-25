@@ -17,7 +17,6 @@ UPLOAD_FOLDER = './img'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}       
 # //选择可用的格式 不可以全部允许因为有安全问题
 # configuration
-DEBUG = True
 # //常规设计
 # instantiate the app
 app = Flask(__name__)
@@ -29,38 +28,34 @@ cors = CORS(app, resources={r'/*': {'origins': '*'}},supports_credentials=True)
 
 
 def start(logger):
+    shutil.rmtree('data')
+    os.mkdir('data')
     pid = os.fork()
-    # 主进程：WEB
     if pid == 0:
-        ppid = os.getppid()
-        try:
-            app.run(host='0.0.0.0', port=5000)
-        except KeyboardInterrupt:
-            os.kill(ppid, signal.SIGINT)
-    # 子进程：crawler/state
-    else:
-        crawler_pid = os.fork()
-        # state
-        if crawler_pid == 0:
+        process2_pid = os.fork()
+        pid_main = os.getppid()
+        if process2_pid == 0:
             ppid = os.getppid()
             try:
                 state = State()
                 state.spin(enabled, interval)
             except KeyboardInterrupt:
-                # 退出时删除生成的所有json文件
-                shutil.rmtree('data')
-                os.mkdir('data')
-                os.kill(ppid,signal.SIGINT)
-        # crawler
+                os.kill(ppid, signal.SIGINT)
         else:
             try:
                 crawler = Fr24Crawler()
-                crawler.spin(loc, rng, enabled,interval)
+                crawler.spin(loc, rng, interval)
             except KeyboardInterrupt:
                 # The process is being killed, let the child process exit.
                 logger.warning("Crawler exits.")
                 os.kill(pid, signal.SIGINT)
-                os.kill(crawler_pid, signal.SIGINT)
+                os.kill(crawler_pid, signal.SIGINT)        
+    else:
+        pid_main = os.getpid()
+        try:
+            app.run(host='0.0.0.0', port=5000)
+        except KeyboardInterrupt:
+            os.kill(pid_main, signal.SIGINT)
 
     # 初始化共享内存
 # //获取当前目录
@@ -79,32 +74,43 @@ def _try():
             li = content.split(',')
             li1 = []
             for i in range(2):
-                li1.append(int(li[i]))
-            return (li1[0],li1[1])
+                li1.append(float(li[i]))
+            res = (li1[0],li1[1])
+            return res
         di = request.json
         center = deal(di['Center'])
         eastwest =deal(di['Northeast'])
-        time = int(di['time'])
+        time1 = int(di['time'])
         select = di['Item']
         
     #设置全局变量
-        loc = mp.Array('d', center)
-        rng = mp.Array('d', eastwest)
-        interval = mp.Value('d', time)
+        loc[0] = center[0]
+        loc[1] = center[1]
+        rng[0] = eastwest[0]
+        rng[1] = eastwest[1]
+        interval.value = time1
     #判断模式以获得enabled的值， 然后开始多线程
         if select == "Amount." :
             dir0 = 'static/img/amount.png'
-            enabled = mp.Array('i', (1,0 ,0))
+            enabled[0] = 1
+            enabled[1] = 0
+            enabled[2] = 0
         elif select == "Landing.":
             dir0 = 'static/img/landing.png'
-            enabled = mp.Array('i', (0, 1, 0))
+            enabled[0] = 0
+            enabled[1] = 1
+            enabled[2] = 0
         elif select == "Taking off.":
             dir0 = 'static/img/takingoff.png'
-            enabled = mp.Array('i', (0, 0, 1))
+            enabled[0] = 0
+            enabled[1] = 0
+            enabled[2] = 1
         elif select == "All displayed.":
             dir0 = 'static/img/amount.png'
-            enabled = mp.Array('i', (1, 1, 1))
-
+            enabled[0] = 1
+            enabled[1] = 1
+            enabled[2] = 1
+        time.sleep(5)
         basepath = os.path.dirname(__file__)  # 当前文件所在路径
  
         upload_path = os.path.join(basepath, dir0)  # 注意：没有的文件夹一定要先创建，不然会提示没有该路径
@@ -119,15 +125,4 @@ def _try():
         response = make_response(imgByteArr)
         response.headers['Content-Type'] = 'image/png'
         return response
-
-# @app.route('/#/Use1',methods=['GET', 'POST'])
-# def findpic(): 
-    # method = request.method
-    # res = make_response(jsonify(token=123456, gender=0, method = method))  # 设置响应体
-    # res.status = '200'# 设置状态码
-    # res.headers['Access-Control-Allow-Origin'] = "*"# 设置允许跨域
-    # res.headers['Access-Control-Allow-Methods'] = 'PUT,GET,POST,DELETE'
-    # return res  
-
-    # return render_template('upload.html')
 

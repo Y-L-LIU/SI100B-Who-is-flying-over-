@@ -240,18 +240,10 @@ def _draw():
 
 def cli_start(logger):
     pid = os.fork()
-    # 主进程：CLI
     if pid == 0:
-        ppid = os.getppid()
-        try:
-            _main()
-        except KeyboardInterrupt:
-            os.kill(ppid, signal.SIGINT)
-    # 子进程：crawler/state
-    else:
-        crawler_pid = os.fork()
-        # state
-        if crawler_pid == 0:
+        process2_pid = os.fork()
+        pid_main = os.getppid()
+        if process2_pid == 0:
             ppid = os.getppid()
             try:
                 state = State()
@@ -261,7 +253,6 @@ def cli_start(logger):
                 shutil.rmtree('data')
                 os.mkdir('data')
                 os.kill(ppid, signal.SIGINT)
-        # crawler
         else:
             try:
                 crawler = Fr24Crawler()
@@ -270,7 +261,13 @@ def cli_start(logger):
                 # The process is being killed, let the child process exit.
                 logger.warning("Crawler exits.")
                 os.kill(pid, signal.SIGINT)
-                os.kill(crawler_pid, signal.SIGINT)
+                os.kill(crawler_pid, signal.SIGINT)        
+    else:
+        pid_main = os.getpid()
+        try:
+            _main()
+        except KeyboardInterrupt:
+            os.kill(pid_main, signal.SIGINT)
 
 
 # 初始化共享内存
@@ -278,9 +275,3 @@ loc = mp.Array('d', (31.17940, 121.59043))
 rng = mp.Array('d', (32.67940, 120.09043))
 interval = mp.Value('d', 5.0)
 enabled = mp.Array('i', (1, 1, 1))
-
-if __name__ == "__main__":
-    # logger = logging.getLogger("si100b_proj:main")
-    # logger.setLevel("INFO")
-    # cli_start(logger)
-    _help()

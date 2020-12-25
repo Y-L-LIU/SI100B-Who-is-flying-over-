@@ -4,7 +4,6 @@ import time
 from typing import Tuple
 from light_controller.controller import *
 import multiprocessing as mp
-from data_source.fr24_crawler import Fr24Crawler
 
 
 class State:
@@ -96,17 +95,9 @@ class State:
             n = 1
             while self.__interval.value * n - dt < 0:
                 n += 1
-            if __name__ == '__main__':
-                print(self.__fl_count, '\n', self.__to_count, '\n', self.__ld_count)
             time.sleep(self.__interval.value * n - dt)
 
     def update_settings(self, enabled, interval):
         self.__enabled = enabled
         self.__interval = interval
         
-if __name__ == '__main__':
-    
-    interval = mp.Value('d', 5.0)
-    enabled = mp.Array('i', (1, 1, 1))
-    a = State()
-    a.spin(enabled, interval)
