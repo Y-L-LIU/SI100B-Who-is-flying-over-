@@ -1,3 +1,8 @@
+All work has been done. A simple tool for you to check your the planes flying all over the world.<br>
+use <code>python3 main.py --cli</code> to open method one.<br>
+input<code>help</code>to get  more information.<br>
+use <code>python3 main.py --web</code> to lanuch a server for you to open a web which contains the interactive UI for you to use.
+----------------------------------------------------------------------------------------------------------
 **<font size=20>Please do not fork Just get into your own branch</font>**
 
 It's very important to know the difference between fork and branch.
